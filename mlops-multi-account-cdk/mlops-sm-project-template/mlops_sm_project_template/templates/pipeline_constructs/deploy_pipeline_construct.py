@@ -289,20 +289,20 @@ class DeployPipelineConstruct(Construct):
                         CfnCapabilities.NAMED_IAM,
                     ],
                 ),
-                codepipeline_actions.ManualApprovalAction(
-                    action_name="Approve_PreProd",
-                    run_order=2,
-                    additional_information="Approving deployment for preprod",
-                ),
             ],
         )
 
         deploy_code_pipeline.add_stage(
             stage_name="DeployPreProd",
             actions=[
+                codepipeline_actions.ManualApprovalAction(
+                    action_name="Approve_PreProd",
+                    run_order=1,
+                    additional_information="Approving deployment for preprod",
+                ),
                 codepipeline_actions.CloudFormationCreateUpdateStackAction(
                     action_name="Deploy_CFN_PreProd",
-                    run_order=1,
+                    run_order=2,
                     template_path=cdk_synth_artifact.at_path("preprod.template.json"),
                     stack_name=f"{project_name}-{construct_id}-preprod",
                     admin_permissions=False,
@@ -322,20 +322,20 @@ class DeployPipelineConstruct(Construct):
                         CfnCapabilities.NAMED_IAM,
                     ],
                 ),
-                codepipeline_actions.ManualApprovalAction(
-                    action_name="Approve_Prod",
-                    run_order=2,
-                    additional_information="Approving deployment for prod",
-                ),
             ],
         )
 
         deploy_code_pipeline.add_stage(
             stage_name="DeployProd",
             actions=[
+                codepipeline_actions.ManualApprovalAction(
+                    action_name="Approve_Prod",
+                    run_order=1,
+                    additional_information="Approving deployment for prod",
+                ),
                 codepipeline_actions.CloudFormationCreateUpdateStackAction(
                     action_name="Deploy_CFN_Prod",
-                    run_order=1,
+                    run_order=2,
                     template_path=cdk_synth_artifact.at_path("prod.template.json"),
                     stack_name=f"{project_name}-{construct_id}-prod",
                     admin_permissions=False,
